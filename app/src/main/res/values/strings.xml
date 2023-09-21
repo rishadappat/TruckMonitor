@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Truck Monitor</string>
+    <string name="list">List</string>
+    <string name="map">Map</string>
+</resources>
