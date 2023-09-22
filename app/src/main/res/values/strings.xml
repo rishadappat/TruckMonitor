@@ -2,4 +2,7 @@
     <string name="app_name">Truck Monitor</string>
     <string name="list">List</string>
     <string name="map">Map</string>
+
+    <string name="loader_msg">Please Wait while loading…</string>
+    <string name="search">Search</string>
 </resources>
