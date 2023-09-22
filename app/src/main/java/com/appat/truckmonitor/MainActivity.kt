@@ -18,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -25,7 +27,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.appat.truckmonitor.data.models.Truck
+import com.appat.truckmonitor.data.state.NetworkResult
+import com.appat.truckmonitor.data.viewmodel.TrucksViewModel
 import com.appat.truckmonitor.navigation.AppBottomNavigation
 import com.appat.truckmonitor.navigation.NavigationGraph
 import com.appat.truckmonitor.ui.customviews.SearchField
@@ -55,6 +61,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenView() {
+
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val navController = rememberNavController()
     Scaffold(
@@ -72,7 +79,9 @@ fun MainScreenView() {
             AppBottomNavigation(navController = navController)
     }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            Box(modifier = Modifier.background(color = primaryColor).padding(20.dp)) {
+            Box(modifier = Modifier
+                .background(color = primaryColor)
+                .padding(20.dp)) {
                 SearchField(placeholder = stringResource(id = R.string.search), textState)
             }
             NavigationGraph(navController = navController)

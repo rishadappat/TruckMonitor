@@ -5,4 +5,8 @@
 
     <string name="loader_msg">Please Wait while loading…</string>
     <string name="search">Search</string>
+    <string name="plateNo">Plate No</string>
+    <string name="driverName">Driver Name</string>
+    <string name="location">Location</string>
+    <string name="lastUpdate">Last Update</string>
 </resources>
