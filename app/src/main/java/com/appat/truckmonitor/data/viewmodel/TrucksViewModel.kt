@@ -2,7 +2,6 @@ package com.appat.truckmonitor.data.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +28,11 @@ class TrucksViewModel@Inject constructor(
 
     var searchText = mutableStateOf(TextFieldValue(""))
 
-    val trucks = mutableStateListOf<Truck>()
+    var isSorted = mutableStateOf(
+        false
+    )
+
+    private val trucks = mutableStateListOf<Truck>()
 
     val trucksList = MutableStateFlow<NetworkResult<out List<Truck>>>(NetworkResult.Loading(R.string.loader_msg))
     suspend fun fetchTrucks() = viewModelScope.launch(dispatcher) {

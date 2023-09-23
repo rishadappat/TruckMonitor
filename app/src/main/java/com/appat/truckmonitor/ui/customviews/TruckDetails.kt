@@ -52,8 +52,8 @@ fun TruckDetails(truck: Truck)
             DetailsText(title = stringResource(id = R.string.plateNo), value = truck.plateNo ?: "")
             DetailsText(title = stringResource(id = R.string.driverName), value = truck.driverName ?: "")
             DetailsText(title = stringResource(id = R.string.location), value = truck.location ?: "")
-            DetailsText(title = stringResource(id = R.string.lastUpdate), value = DateUtils.dateToDesc(truck.lastUpdated ?: "",
-                DateFormatString.defaultFormat, DateFormatString.DateTime))
+            DetailsText(title = stringResource(id = R.string.lastUpdate), value = DateUtils.dateToDescTime(truck.lastUpdated ?: "",
+                DateFormatString.defaultFormat, DateFormatString.DateTime, DateFormatString.Time))
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.appat.truckmonitor.utilities
 
+import android.text.format.DateUtils
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -10,6 +11,7 @@ import java.util.Locale
 enum class DateFormatString(val format: String) {
     defaultFormat("yyyy-MM-dd'T'HH:mm:ssZ"),
     DateTime("dd-MM-yyyy hh:mm aa"),
+    Time("hh:mm aa")
 }
 object DateUtils {
     fun dateToDesc(
@@ -33,6 +35,9 @@ object DateUtils {
                     nowTime[Calendar.DATE] - neededTime[Calendar.DATE] == 1 -> {
                         "Yesterday"
                     }
+                    nowTime[Calendar.DATE] - neededTime[Calendar.DATE] == 2 -> {
+                        "2 Days ago"
+                    }
                     else -> {
                         dateToString(date, outputFormat)
                     }
@@ -42,6 +47,36 @@ object DateUtils {
             }
         } else {
             dateToString(date, outputFormat)
+        }
+    }
+
+
+    fun dateToDescTime(
+        dateString: String?,
+        inputFormat: DateFormatString,
+        dateOutputFormat: DateFormatString,
+        timeOutputFormat: DateFormatString
+    ): String {
+        if (dateString.isNullOrEmpty()) {
+            return ""
+        }
+        val date = stringToDate(dateString, inputFormat) ?: Date()
+        return if (DateUtils.isToday(date.time)) {
+            "Today ${dateToString(date, timeOutputFormat)}"
+        } else if (isYesterday(date.time)) {
+            "Yesterday ${
+                dateToString(
+                    date,
+                    timeOutputFormat
+                )
+            }"
+        }
+        else
+        {
+            dateToString(
+                date,
+                dateOutputFormat
+            )
         }
     }
 
@@ -57,7 +92,7 @@ object DateUtils {
         return Locale.getDefault()
     }
 
-    private fun stringToDate(dateString: String?, inputFormat: DateFormatString): Date? {
+    fun stringToDate(dateString: String?, inputFormat: DateFormatString): Date? {
         if (dateString.isNullOrEmpty()) {
             return null
         }
@@ -69,4 +104,9 @@ object DateUtils {
             return null
         }
     }
+
+    private fun isYesterday(whenInMillis: Long): Boolean {
+        return DateUtils.isToday(whenInMillis + DateUtils.DAY_IN_MILLIS)
+    }
+
 }
