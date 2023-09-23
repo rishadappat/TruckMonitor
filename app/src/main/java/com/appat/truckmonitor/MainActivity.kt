@@ -24,25 +24,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.appat.truckmonitor.data.models.Truck
-import com.appat.truckmonitor.data.state.NetworkResult
+import com.appat.truckmonitor.data.network.state.NetworkResult
 import com.appat.truckmonitor.data.viewmodel.TrucksViewModel
 import com.appat.truckmonitor.navigation.AppBottomNavigation
 import com.appat.truckmonitor.navigation.NavigationGraph
 import com.appat.truckmonitor.ui.customviews.SearchField
 import com.appat.truckmonitor.ui.theme.TruckMonitorTheme
 import com.appat.truckmonitor.ui.theme.primaryColor
+import com.google.android.gms.maps.MapsInitializer
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        MapsInitializer.initialize(this)
         enableEdgeToEdge()
         setContent {
             TruckMonitorTheme {
@@ -61,7 +64,10 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenView() {
-
+    val truckViewModel: TrucksViewModel = hiltViewModel()
+    LaunchedEffect(key1 = Unit, block = {
+        truckViewModel.fetchTrucks()
+    })
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val navController = rememberNavController()
     Scaffold(

@@ -1,22 +1,19 @@
 package com.appat.truckmonitor.screens
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -36,15 +33,16 @@ import com.appat.truckmonitor.ui.theme.bgColor
 
 @Composable
 fun ListScreen(){
+    val scrollState = rememberLazyListState()
+    val truckViewModel: TrucksViewModel = hiltViewModel()
+    val response = truckViewModel.trucksList.collectAsState()
+    LaunchedEffect(key1 = Unit, block = {
+        truckViewModel.readTrucks()
+    })
     Box(
         Modifier
             .fillMaxSize()
             .background(color = bgColor)) {
-        val truckViewModel: TrucksViewModel = hiltViewModel()
-        val response = truckViewModel.trucksList.collectAsState()
-        LaunchedEffect(key1 = Unit, block = {
-            truckViewModel.getTrucks()
-        })
         AnimatedContent(targetState = response.value.data == null,
             transitionSpec = {
                 fadeIn(animationSpec = tween(300)) togetherWith
@@ -57,9 +55,12 @@ fun ListScreen(){
                 }
             }
             else {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    contentPadding = PaddingValues(10.dp),
+                    modifier = Modifier.fillMaxSize(),
+                    state = scrollState) {
                     itemsIndexed(items = response.value.data ?: listOf(),
-                        itemContent = { index, truck ->
+                        itemContent = { _, truck ->
                             ListItem(truck = truck)
                         }
                     )
@@ -74,9 +75,7 @@ fun ListItem(truck: Truck)
 {
     Card(modifier = Modifier
         .padding(10.dp)
-        .fillMaxWidth()
-        .background(color = Color.White),
-        shape = RoundedCornerShape(20.dp),
+        .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.elevatedCardElevation(10.dp)
     ) {

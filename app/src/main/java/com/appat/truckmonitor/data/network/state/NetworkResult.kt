@@ -1,4 +1,4 @@
-package com.appat.truckmonitor.data.state
+package com.appat.truckmonitor.data.network.state
 
 import androidx.annotation.StringRes
 

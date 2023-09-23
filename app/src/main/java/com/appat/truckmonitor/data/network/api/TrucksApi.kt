@@ -1,4 +1,4 @@
-package com.appat.truckmonitor.data.api
+package com.appat.truckmonitor.data.network.api
 
 import com.appat.truckmonitor.data.models.Truck
 import retrofit2.Response

@@ -1,9 +1,9 @@
-package com.appat.truckmonitor.data.repository
+package com.appat.truckmonitor.data.network.repository
 
-import com.appat.truckmonitor.data.api.TrucksApi
+import com.appat.truckmonitor.data.network.api.TrucksApi
 import com.appat.truckmonitor.data.models.Truck
-import com.appat.truckmonitor.data.state.ApiResponseHandler
-import com.appat.truckmonitor.data.state.NetworkResult
+import com.appat.truckmonitor.data.network.state.ApiResponseHandler
+import com.appat.truckmonitor.data.network.state.NetworkResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

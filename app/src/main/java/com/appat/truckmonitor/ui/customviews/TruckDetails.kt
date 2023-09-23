@@ -1,12 +1,10 @@
 package com.appat.truckmonitor.ui.customviews
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,11 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.appat.truckmonitor.R
 import com.appat.truckmonitor.data.models.Truck
 import com.appat.truckmonitor.ui.theme.primaryColor
 import com.appat.truckmonitor.ui.theme.secondaryTextColor
+import com.appat.truckmonitor.utilities.DateFormatString
+import com.appat.truckmonitor.utilities.DateUtils
 
 @Composable
 fun TruckDetails(truck: Truck)
@@ -47,13 +46,14 @@ fun TruckDetails(truck: Truck)
             contentScale = ContentScale.Crop)
         Spacer(modifier = Modifier.width(20.dp))
         Column(modifier = Modifier
-            .fillMaxHeight()
-            .weight(1f),
+            .weight(1f)
+            .align(Alignment.Bottom),
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
             DetailsText(title = stringResource(id = R.string.plateNo), value = truck.plateNo ?: "")
             DetailsText(title = stringResource(id = R.string.driverName), value = truck.driverName ?: "")
             DetailsText(title = stringResource(id = R.string.location), value = truck.location ?: "")
-            DetailsText(title = stringResource(id = R.string.lastUpdate), value = truck.lastUpdated ?: "")
+            DetailsText(title = stringResource(id = R.string.lastUpdate), value = DateUtils.dateToDesc(truck.lastUpdated ?: "",
+                DateFormatString.defaultFormat, DateFormatString.DateTime))
         }
     }
 }

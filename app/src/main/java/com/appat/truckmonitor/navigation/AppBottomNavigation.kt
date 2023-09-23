@@ -71,7 +71,6 @@ fun AppBottomNavigation(navController: NavController) {
                         navController.graph.startDestinationRoute?.let { screenRoute ->
                             popUpTo(screenRoute) {
                                 saveState = true
-                                inclusive = false
                             }
                         }
                         launchSingleTop = true

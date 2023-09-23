@@ -1,7 +1,7 @@
 package com.appat.truckmonitor.di.service
 
-import com.appat.truckmonitor.data.api.TrucksApi
-import com.appat.truckmonitor.data.repository.TrucksRepository
+import com.appat.truckmonitor.data.network.api.TrucksApi
+import com.appat.truckmonitor.data.network.repository.TrucksRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
