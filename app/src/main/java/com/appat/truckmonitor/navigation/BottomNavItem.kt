@@ -13,6 +13,7 @@ enum class Route(val value: String)
 {
     List("list"),
     Map("map"),
+    MainActivity("mainActivity")
 }
 
 sealed class BottomNavItem(@StringRes var title: Int, var activeIcon: ImageVector, var inactiveIcon: ImageVector, var screenRoute: String){

@@ -23,34 +23,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.appat.truckmonitor.data.models.Truck
 import com.appat.truckmonitor.data.viewmodel.TrucksViewModel
 import com.appat.truckmonitor.ui.customviews.ShimmerView
 import com.appat.truckmonitor.ui.customviews.TruckDetails
 import com.appat.truckmonitor.ui.theme.bgColor
+import timber.log.Timber
 
 
 @Composable
-fun ListScreen(){
+fun ListScreen(trucksViewModel: TrucksViewModel) {
     val scrollState = rememberLazyListState()
-    val truckViewModel: TrucksViewModel = hiltViewModel()
-    val response = truckViewModel.trucksList.collectAsState()
+    val response = trucksViewModel.trucksList.collectAsState()
     LaunchedEffect(key1 = Unit, block = {
-        truckViewModel.readTrucks()
+        trucksViewModel.readTrucks()
     })
+    val trucks = response.value.data?.filter {
+        (it.driverName ?: "").contains(trucksViewModel.searchText.value.text, true)
+    }
     Box(
         Modifier
             .fillMaxSize()
             .background(color = bgColor)) {
-        AnimatedContent(targetState = response.value.data == null,
+        AnimatedContent(targetState = trucks == null,
             transitionSpec = {
                 fadeIn(animationSpec = tween(300)) togetherWith
                         fadeOut(animationSpec = tween(300))
             }, label = "") {
             if(it)
             {
-                List(size = response.value.data?.size ?: 10) {
+                List(size = trucks?.size ?: 10) {
                     ShimmerList()
                 }
             }
@@ -59,7 +61,7 @@ fun ListScreen(){
                     contentPadding = PaddingValues(10.dp),
                     modifier = Modifier.fillMaxSize(),
                     state = scrollState) {
-                    itemsIndexed(items = response.value.data ?: listOf(),
+                    itemsIndexed(items = trucks ?: listOf(),
                         itemContent = { _, truck ->
                             ListItem(truck = truck)
                         }

@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -40,6 +44,7 @@ import com.appat.truckmonitor.ui.theme.TruckMonitorTheme
 import com.appat.truckmonitor.ui.theme.primaryColor
 import com.google.android.gms.maps.MapsInitializer
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -68,7 +73,6 @@ fun MainScreenView() {
     LaunchedEffect(key1 = Unit, block = {
         truckViewModel.fetchTrucks()
     })
-    val textState = remember { mutableStateOf(TextFieldValue("")) }
     val navController = rememberNavController()
     Scaffold(
         topBar = {
@@ -78,7 +82,16 @@ fun MainScreenView() {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = primaryColor,
                     titleContentColor = Color.White,
-                )
+                ),
+                actions = {
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.Sort,
+                            contentDescription = "Sort",
+                            tint = Color.White
+                        )
+                    }
+                },
             )
         },
         bottomBar = {
@@ -88,9 +101,9 @@ fun MainScreenView() {
             Box(modifier = Modifier
                 .background(color = primaryColor)
                 .padding(20.dp)) {
-                SearchField(placeholder = stringResource(id = R.string.search), textState)
+                SearchField(placeholder = stringResource(id = R.string.search), truckViewModel.searchText)
             }
-            NavigationGraph(navController = navController)
+            NavigationGraph(navController = navController, truckViewModel)
         }
     }
 }

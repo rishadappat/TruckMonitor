@@ -1,6 +1,9 @@
 package com.appat.truckmonitor.data.viewmodel
 
-import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.appat.truckmonitor.R
@@ -23,6 +26,11 @@ class TrucksViewModel@Inject constructor(
     private val trucksDbRepository: TrucksDbRepository,
     private val dispatcher: CoroutineDispatcher
 ): ViewModel() {
+
+    var searchText = mutableStateOf(TextFieldValue(""))
+
+    val trucks = mutableStateListOf<Truck>()
+
     val trucksList = MutableStateFlow<NetworkResult<out List<Truck>>>(NetworkResult.Loading(R.string.loader_msg))
     suspend fun fetchTrucks() = viewModelScope.launch(dispatcher) {
         trucksRepository.getTrucks().collect {
@@ -44,6 +52,7 @@ class TrucksViewModel@Inject constructor(
             trucksList.value = NetworkResult.Error("Something went wrong", 0)
         }.collect {
             trucksList.value = NetworkResult.Success(it)
+            trucks.addAll(it)
         }
     }
 }

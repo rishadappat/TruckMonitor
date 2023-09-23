@@ -34,18 +34,22 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MapScreen(){
+fun MapScreen(trucksViewModel: TrucksViewModel) {
     val truckViewModel: TrucksViewModel = hiltViewModel()
     val response = truckViewModel.trucksList.collectAsState()
     LaunchedEffect(key1 = Unit, block = {
         truckViewModel.readTrucks()
     })
+    val trucks = response.value.data?.filter {
+        (it.driverName ?: "").contains(trucksViewModel.searchText.value.text, true)
+    }
 
     val pagerState = rememberPagerState(pageCount = {
-        response.value.data?.size ?: 0
+        trucks?.size ?: 0
     })
 
     val defaultLocation by remember {
@@ -71,10 +75,10 @@ fun MapScreen(){
     val cameraPositionState = rememberCameraPositionState {
         position = positionState
     }
-    LaunchedEffect(key1 = response.value.data, block = {
-        val trucks = response.value.data
+    LaunchedEffect(key1 = trucks?.size, block = {
         if(!trucks.isNullOrEmpty()) {
             selectedTruck = trucks[0]
+            pagerState.animateScrollToPage(0)
         }
     })
     LaunchedEffect(key1 = selectedTruck) {
@@ -86,9 +90,9 @@ fun MapScreen(){
             durationMs = 600
         )
     }
-    LaunchedEffect(pagerState) {
+    LaunchedEffect(pagerState.currentPage) {
+        Timber.d(pagerState.currentPage.toString())
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            val trucks = response.value.data
             if(!trucks.isNullOrEmpty()) {
                 selectedTruck = trucks[page]
             }
@@ -98,7 +102,6 @@ fun MapScreen(){
     Box(
         Modifier
             .fillMaxSize()) {
-        val trucks = response.value.data
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
