@@ -77,9 +77,7 @@ fun ListScreen(trucksViewModel: TrucksViewModel) {
             }, label = "") {
             if(it)
             {
-                List(size = 10) {
-                    ShimmerList()
-                }
+                ShimmerListItem()
             }
             else {
                 LazyColumn(
@@ -111,7 +109,7 @@ fun ListItem(truck: Truck)
 }
 
 @Composable
-fun ShimmerList() {
+fun ShimmerListItem() {
     LazyColumn(modifier = Modifier.fillMaxSize(),
         userScrollEnabled = false) {
         items(count = 10) {
