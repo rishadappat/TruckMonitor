@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.appat.truckmonitor.data.models.Truck
 import com.appat.truckmonitor.data.network.state.NetworkResult
 import com.appat.truckmonitor.data.viewmodel.TrucksViewModel
@@ -40,7 +41,7 @@ import com.appat.truckmonitor.utilities.DateUtils
 @Composable
 fun ListScreen(trucksViewModel: TrucksViewModel) {
     val scrollState = rememberLazyListState()
-    val response = trucksViewModel.trucksList.collectAsState()
+    val response = trucksViewModel.trucksList.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = Unit, block = {
         trucksViewModel.readTrucks()
     })

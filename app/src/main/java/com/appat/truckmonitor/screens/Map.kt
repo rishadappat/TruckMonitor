@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.appat.truckmonitor.R
 import com.appat.truckmonitor.data.models.Truck
 import com.appat.truckmonitor.data.viewmodel.TrucksViewModel
@@ -42,12 +43,18 @@ import timber.log.Timber
 @Composable
 fun MapScreen(trucksViewModel: TrucksViewModel) {
     val truckViewModel: TrucksViewModel = hiltViewModel()
-    val response = truckViewModel.trucksList.collectAsState()
+    val response = truckViewModel.trucksList.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = Unit, block = {
         truckViewModel.readTrucks()
     })
     var trucks:List<Truck> by remember {
         mutableStateOf(listOf())
+    }
+    val defaultLocation by remember {
+        mutableStateOf(LatLng(25.0762424,55.062682))
+    }
+    var selectedTruck: Truck? by remember {
+        mutableStateOf(null)
     }
     LaunchedEffect(key1 = trucksViewModel.searchText.value.text, block = {
         trucks = response.value.data?.filter {
@@ -58,6 +65,9 @@ fun MapScreen(trucksViewModel: TrucksViewModel) {
         trucks = response.value.data?.filter {
             (it.driverName ?: "").contains(trucksViewModel.searchText.value.text, true)
         } ?: listOf()
+        if(trucks.isNotEmpty()) {
+            selectedTruck = trucks[0]
+        }
     })
     LaunchedEffect(key1 = trucksViewModel.isSorted.value, block = {
         trucks = if(trucksViewModel.isSorted.value) {
@@ -74,12 +84,6 @@ fun MapScreen(trucksViewModel: TrucksViewModel) {
         trucks.size
     })
 
-    val defaultLocation by remember {
-        mutableStateOf(LatLng(25.0762424,55.062682))
-    }
-    var selectedTruck: Truck? by remember {
-        mutableStateOf(null)
-    }
     val mapUiSettings by remember {
         mutableStateOf(
             MapUiSettings(mapToolbarEnabled = false,
