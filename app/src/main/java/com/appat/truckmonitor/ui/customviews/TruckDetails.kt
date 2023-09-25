@@ -41,7 +41,7 @@ fun TruckDetails(truck: Truck)
                 .height(100.dp)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(10.dp)),
-            model = truck.imageURL,
+            model = truck.imageURL?.replace("i.", ""),
             contentDescription = truck.driverName,
             contentScale = ContentScale.Crop)
         Spacer(modifier = Modifier.width(20.dp))
