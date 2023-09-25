@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,6 +34,7 @@ import com.appat.truckmonitor.ui.theme.bgColor
 import timber.log.Timber
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListScreen(trucksViewModel: TrucksViewModel) {
     val scrollState = rememberLazyListState()
@@ -66,8 +68,11 @@ fun ListScreen(trucksViewModel: TrucksViewModel) {
                     modifier = Modifier.fillMaxSize(),
                     state = scrollState) {
                     itemsIndexed(items = uiState.value.trucks,
+                        key = { _, truck ->
+                              truck.plateNo ?: truck.id
+                        },
                         itemContent = { _, truck ->
-                            ListItem(truck = truck)
+                            ListItem(truck = truck, modifier = Modifier.animateItemPlacement())
                         }
                     )
                 }
@@ -77,9 +82,9 @@ fun ListScreen(trucksViewModel: TrucksViewModel) {
 }
 
 @Composable
-fun ListItem(truck: Truck)
+fun ListItem(truck: Truck, modifier: Modifier)
 {
-    Card(modifier = Modifier
+    Card(modifier = modifier
         .padding(10.dp)
         .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
