@@ -89,6 +89,7 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.android.testing)
+    implementation(libs.javapoet)
 
     //Room db
     ksp(libs.androidx.room.compiler)
@@ -115,6 +116,4 @@ dependencies {
 
     //ViewModel
     implementation(libs.viewmodel.ktx)
-
-    implementation(libs.javapoet)
 }

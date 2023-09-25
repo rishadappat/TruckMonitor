@@ -34,6 +34,7 @@ import com.appat.truckmonitor.ui.customviews.SearchField
 import com.appat.truckmonitor.ui.customviews.SortButton
 import com.appat.truckmonitor.ui.theme.TruckMonitorTheme
 import com.appat.truckmonitor.ui.theme.primaryColor
+import com.google.android.gms.maps.MapsInitializer
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

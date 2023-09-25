@@ -81,7 +81,7 @@ class TrucksViewModel@Inject constructor(
         sortTrucks()
     }
 
-    fun sortTrucks() {
+    private fun sortTrucks() {
         _uiState.update { currentState ->
             if (currentState.isSorted) {
                 currentState.copy(
@@ -108,7 +108,7 @@ class TrucksViewModel@Inject constructor(
         searchTrucks()
     }
 
-    fun searchTrucks()
+    private fun searchTrucks()
     {
         _uiState.update { currentState ->
             currentState.copy(

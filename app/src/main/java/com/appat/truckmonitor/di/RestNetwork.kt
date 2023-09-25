@@ -40,11 +40,9 @@ object RestNetwork {
     @Singleton
     fun provideHeaderInterceptor(): Interceptor {
         return Interceptor {
-            runBlocking {
-                val request = it.request().newBuilder()
-                request.header("Content-Type", "application/json")
-                it.proceed(request.build())
-            }
+            val request = it.request().newBuilder()
+            request.header("Content-Type", "application/json")
+            it.proceed(request.build())
         }
     }
 
