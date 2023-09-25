@@ -9,4 +9,5 @@
     <string name="driverName">Driver Name</string>
     <string name="location">Location</string>
     <string name="lastUpdate">Last Update</string>
+    <string name="error">"Something went wrong"</string>
 </resources>

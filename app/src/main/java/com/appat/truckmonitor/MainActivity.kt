@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.appat.truckmonitor.data.viewmodel.TrucksViewModel
 import com.appat.truckmonitor.navigation.AppBottomNavigation
@@ -58,9 +59,10 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenView() {
-    val truckViewModel: TrucksViewModel = hiltViewModel()
+    val trucksViewModel: TrucksViewModel = hiltViewModel()
+    val uiState = trucksViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = Unit, block = {
-        truckViewModel.fetchTrucks()
+        trucksViewModel.fetchTrucks()
     })
     val navController = rememberNavController()
     val (isChecked, setChecked) = remember { mutableStateOf(false) }
@@ -76,8 +78,8 @@ fun MainScreenView() {
                 ),
                 actions = {
                     SortButton(
-                        isChecked = truckViewModel.isSorted.value,
-                        onClick = { truckViewModel.isSorted.value = !truckViewModel.isSorted.value }
+                        isChecked = uiState.value.isSorted,
+                        onClick = { trucksViewModel.toggleSort() }
                     )
                 },
             )
@@ -89,9 +91,9 @@ fun MainScreenView() {
             Box(modifier = Modifier
                 .background(color = primaryColor)
                 .padding(20.dp)) {
-                SearchField(placeholder = stringResource(id = R.string.search), truckViewModel.searchText)
+                SearchField(placeholder = stringResource(id = R.string.search), trucksViewModel)
             }
-            NavigationGraph(navController = navController, truckViewModel)
+            NavigationGraph(navController = navController, trucksViewModel)
         }
     }
 }

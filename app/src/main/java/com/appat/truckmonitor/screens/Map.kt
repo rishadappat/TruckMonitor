@@ -17,14 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.appat.truckmonitor.R
 import com.appat.truckmonitor.data.models.Truck
 import com.appat.truckmonitor.data.viewmodel.TrucksViewModel
 import com.appat.truckmonitor.ui.customviews.TruckDetails
-import com.appat.truckmonitor.utilities.DateFormatString
-import com.appat.truckmonitor.utilities.DateUtils
 import com.appat.truckmonitor.utilities.Utility.bitmapDescriptor
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -42,48 +38,22 @@ import timber.log.Timber
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MapScreen(trucksViewModel: TrucksViewModel) {
-    val truckViewModel: TrucksViewModel = hiltViewModel()
-    val response = truckViewModel.trucksList.collectAsStateWithLifecycle()
-    LaunchedEffect(key1 = Unit, block = {
-        truckViewModel.readTrucks()
+    val uiState = trucksViewModel.uiState.collectAsState()
+    LaunchedEffect(key1 = uiState.value.searchText, block = {
+        trucksViewModel.searchTrucks()
     })
-    var trucks:List<Truck> by remember {
-        mutableStateOf(listOf())
-    }
+    LaunchedEffect(key1 = uiState.value.isSorted, block = {
+        trucksViewModel.sortTrucks()
+    })
+    val pagerState = rememberPagerState(pageCount = {
+        uiState.value.trucks.size
+    })
     val defaultLocation by remember {
         mutableStateOf(LatLng(25.0762424,55.062682))
     }
     var selectedTruck: Truck? by remember {
         mutableStateOf(null)
     }
-    LaunchedEffect(key1 = trucksViewModel.searchText.value.text, block = {
-        trucks = response.value.data?.filter {
-            (it.driverName ?: "").contains(trucksViewModel.searchText.value.text, true)
-        } ?: listOf()
-    })
-    LaunchedEffect(key1 = response.value.data, block = {
-        trucks = response.value.data?.filter {
-            (it.driverName ?: "").contains(trucksViewModel.searchText.value.text, true)
-        } ?: listOf()
-        if(trucks.isNotEmpty()) {
-            selectedTruck = trucks[0]
-        }
-    })
-    LaunchedEffect(key1 = trucksViewModel.isSorted.value, block = {
-        trucks = if(trucksViewModel.isSorted.value) {
-            trucks.sortedByDescending {
-                DateUtils.stringToDate(it.lastUpdated, DateFormatString.defaultFormat)
-            } ?: listOf()
-        } else {
-            response.value.data?.filter {
-                (it.driverName ?: "").contains(trucksViewModel.searchText.value.text, true)
-            } ?: listOf()
-        }
-    })
-    val pagerState = rememberPagerState(pageCount = {
-        trucks.size
-    })
-
     val mapUiSettings by remember {
         mutableStateOf(
             MapUiSettings(mapToolbarEnabled = false,
@@ -101,9 +71,9 @@ fun MapScreen(trucksViewModel: TrucksViewModel) {
     val cameraPositionState = rememberCameraPositionState {
         position = positionState
     }
-    LaunchedEffect(key1 = trucks, block = {
-        if(trucks.isNotEmpty()) {
-            selectedTruck = trucks[0]
+    LaunchedEffect(key1 = uiState.value.trucks, block = {
+        if(uiState.value.trucks.isNotEmpty()) {
+            selectedTruck = uiState.value.trucks[0]
             pagerState.animateScrollToPage(0)
         }
     })
@@ -119,8 +89,8 @@ fun MapScreen(trucksViewModel: TrucksViewModel) {
     LaunchedEffect(pagerState.currentPage) {
         Timber.d(pagerState.currentPage.toString())
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            if(trucks.isNotEmpty()) {
-                selectedTruck = trucks[page]
+            if(uiState.value.trucks.isNotEmpty()) {
+                selectedTruck = uiState.value.trucks[page]
             }
         }
     }
@@ -135,7 +105,7 @@ fun MapScreen(trucksViewModel: TrucksViewModel) {
             properties = properties,
             contentPadding = PaddingValues(bottom = 160.dp),
         ) {
-            trucks.forEach { truck ->
+            uiState.value.trucks.forEach { truck ->
                 TruckMapMarker(
                     state = LatLng(truck.lat, truck.lng),
                     title = truck.plateNo ?: "",
@@ -144,7 +114,7 @@ fun MapScreen(trucksViewModel: TrucksViewModel) {
                     onClick = {
                         selectedTruck = truck
                         scope.launch {
-                            pagerState.animateScrollToPage(trucks.indexOf(truck))
+                            pagerState.animateScrollToPage(uiState.value.trucks.indexOf(truck))
                         }
                         return@TruckMapMarker true
                     }
@@ -158,14 +128,13 @@ fun MapScreen(trucksViewModel: TrucksViewModel) {
             state = pagerState,
             verticalAlignment = Alignment.Bottom,
             contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 20.dp),) { page ->
-            if(trucks.isNotEmpty()) {
-                PagerItem(truck = trucks[page])
+            if(uiState.value.trucks.isNotEmpty()) {
+                PagerItem(truck = uiState.value.trucks[page])
             }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerItem(truck: Truck)
 {
