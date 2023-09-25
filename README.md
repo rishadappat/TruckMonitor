@@ -17,3 +17,16 @@ Architecture
   5. Gson for serialization
   6. RoomDb for local storage
   7. Coil for image loading and caching
+
+
+Screens
+<table>
+  <tr>
+     <td>Start</td>
+     <td>Questionnaire List</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/list.png" width=270 height=585></td>
+    <td><img src="screenshots/map.png" width=270 height=585></td>
+  </tr>
+ </table>
