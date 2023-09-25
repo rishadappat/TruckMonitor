@@ -63,6 +63,7 @@ fun MainScreenView() {
     val uiState = trucksViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = Unit, block = {
         trucksViewModel.fetchTrucks()
+        trucksViewModel.readTrucks()
     })
     val navController = rememberNavController()
     val (isChecked, setChecked) = remember { mutableStateOf(false) }

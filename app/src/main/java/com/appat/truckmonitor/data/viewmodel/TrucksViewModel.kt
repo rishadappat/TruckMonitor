@@ -78,6 +78,7 @@ class TrucksViewModel@Inject constructor(
                 isSorted = currentState.isSorted.not()
             )
         }
+        sortTrucks()
     }
 
     fun sortTrucks() {
@@ -104,6 +105,7 @@ class TrucksViewModel@Inject constructor(
                 searchText = searchText
             )
         }
+        searchTrucks()
     }
 
     fun searchTrucks()

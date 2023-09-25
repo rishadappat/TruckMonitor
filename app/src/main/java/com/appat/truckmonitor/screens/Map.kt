@@ -39,12 +39,6 @@ import timber.log.Timber
 @Composable
 fun MapScreen(trucksViewModel: TrucksViewModel) {
     val uiState = trucksViewModel.uiState.collectAsState()
-    LaunchedEffect(key1 = uiState.value.searchText, block = {
-        trucksViewModel.searchTrucks()
-    })
-    LaunchedEffect(key1 = uiState.value.isSorted, block = {
-        trucksViewModel.sortTrucks()
-    })
     val pagerState = rememberPagerState(pageCount = {
         uiState.value.trucks.size
     })

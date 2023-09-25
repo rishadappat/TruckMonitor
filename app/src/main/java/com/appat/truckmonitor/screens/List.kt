@@ -40,15 +40,6 @@ fun ListScreen(trucksViewModel: TrucksViewModel) {
     val scrollState = rememberLazyListState()
     val uiState = trucksViewModel.uiState.collectAsState()
     val response = uiState.value.truckResponse
-    LaunchedEffect(key1 = Unit, block = {
-        trucksViewModel.readTrucks()
-    })
-    LaunchedEffect(key1 = uiState.value.searchText, block = {
-        trucksViewModel.searchTrucks()
-    })
-    LaunchedEffect(key1 = uiState.value.isSorted, block = {
-        trucksViewModel.sortTrucks()
-    })
     Box(
         Modifier
             .fillMaxSize()
